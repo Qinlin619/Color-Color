@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Color & Color - 颜色方块连连看</title>
+    <meta name="description" content="一个极简而精美的颜色方块连连看游戏，挑战你的视觉与反应。">
+    <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Start Screen -->
+        <div id="start-screen" class="overlay">
+            <div class="modal main-start">
+                <h1 class="title large">Color & Color</h1>
+                <p class="subtitle" data-i18n="subtitle">考验你的色彩灵敏度</p>
+                <div class="lang-toggle">
+                    <button class="lang-btn active" data-lang="zh">中文</button>
+                    <button class="lang-btn" data-lang="en">EN</button>
+                </div>
+                <button id="start-game-btn" class="primary-btn pulse" data-i18n="startBtn">开始游戏</button>
+            </div>
+        </div>
+
+        <header>
+            <h1 class="title">Color & Color</h1>
+            <div class="stats-container">
+                <div class="stat-item">
+                    <span class="label" data-i18n="levelLabel">LEVEL</span>
+                    <span id="level-value" class="value">1</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label" data-i18n="scoreLabel">SCORE</span>
+                    <span id="score-value" class="value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="label" data-i18n="timeLabel">TIME</span>
+                    <span id="timer-value" class="value">00:00</span>
+                </div>
+            </div>
+        </header>
+
+        <main id="game-container">
+            <div id="game-board"></div>
+        </main>
+
+        <div id="ui-overlay" class="overlay hidden">
+            <div class="modal">
+                <h2 id="modal-title">Level Complete!</h2>
+                <p id="modal-msg">Congratulations!</p>
+                <button id="next-level-btn" class="primary-btn">Next Level</button>
+            </div>
+        </div>
+
+        <footer>
+            <button id="shuffle-btn" class="util-btn" data-i18n="shuffleBtn">Shuffle</button>
+            <button id="restart-btn" class="util-btn" data-i18n="restartBtn">Restart</button>
+        </footer>
+    </div>
+    <script type="module" src="./main.js"></script>
+</body>
+</html>
