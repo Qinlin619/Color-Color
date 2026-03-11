@@ -304,7 +304,14 @@ function updateLevelDots() {
 
 function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
-    timer = 120; // 2 minutes countdown
+    
+    // Set time based on mode
+    let timeLimit = 120; // Default: Rainbow (2:00)
+    if (currentMode === 'morandi') timeLimit = 110; // 1:50
+    else if (currentMode === 'macaron') timeLimit = 100; // 1:40
+    else if (currentMode === 'matisse') timeLimit = 90; // 1:30
+    
+    timer = timeLimit;
     
     // Initial display
     const mins = Math.floor(timer / 60).toString().padStart(2, '0');
