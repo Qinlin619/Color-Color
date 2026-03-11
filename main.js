@@ -18,7 +18,6 @@ let completedModes = JSON.parse(localStorage.getItem('completedModes')) || {
 };
 
 const boardElement = document.getElementById('game-board');
-const levelValue = document.getElementById('level-value');
 const timerValue = document.getElementById('timer-value');
 const uiOverlay = document.getElementById('ui-overlay');
 const startScreen = document.getElementById('start-screen');
@@ -294,7 +293,6 @@ function handleBlockClick(r, c) {
 }
 
 function updateStats() {
-    levelValue.textContent = currentLevel;
     updateLevelDots();
 }
 
