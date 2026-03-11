@@ -756,10 +756,10 @@ body:not(.dark-mode) .icon-moon {
     }
 
     #app {
-        padding: 0.5rem 0.5rem 2.5rem 0.5rem; /* Increased bottom padding */
-        gap: 0.5rem;
-        justify-content: flex-start; /* Shift content up */
-        margin-top: 1rem;
+        padding: 0rem 0.5rem 4.5rem 0.5rem; 
+        gap: 0.3rem;
+        justify-content: flex-start;
+        margin-top: 0px;
     }
 
     .title {

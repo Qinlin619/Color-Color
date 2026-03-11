@@ -53,9 +53,9 @@ export class AudioController {
         this.playTone(523.25, 'sine', 0.2, 0.1); // C5
         setTimeout(() => this.playTone(659.25, 'sine', 0.3, 0.1), 100); // E5
 
-        // Reward vibration: stronger double pulse
+        // Reward vibration: much stronger double pulse
         if ('vibrate' in navigator) {
-            navigator.vibrate([60, 40, 60]);
+            navigator.vibrate([100, 30, 100]);
         }
     }
 
@@ -64,9 +64,9 @@ export class AudioController {
         // Short, clean low tone
         this.playTone(150, 'sine', 0.1, 0.08);
         
-        // Stronger vibration for mismatch
+        // Stronger, more jarring vibration for mismatch
         if ('vibrate' in navigator) {
-            navigator.vibrate(100);
+            navigator.vibrate([150, 50, 150]);
         }
     }
 
@@ -77,9 +77,9 @@ export class AudioController {
             setTimeout(() => this.playTone(note, 'sine', 0.4, 0.1), i * 150);
         });
 
-        // More celebratory, stronger vibration
+        // Very strong celebratory vibration
         if ('vibrate' in navigator) {
-            navigator.vibrate([150, 50, 150, 50, 300]);
+            navigator.vibrate([200, 40, 200, 40, 500]);
         }
     }
 
@@ -90,9 +90,9 @@ export class AudioController {
             setTimeout(() => this.playTone(note, 'sine', 0.5, 0.1), i * 200);
         });
 
-        // Grand finale, very strong vibration
+        // Ultimate grand finale vibration
         if ('vibrate' in navigator) {
-            navigator.vibrate([200, 50, 200, 50, 200, 50, 800]);
+            navigator.vibrate([300, 50, 300, 50, 300, 50, 1200]);
         }
     }
 
