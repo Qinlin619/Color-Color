@@ -51,7 +51,11 @@ const i18n = {
         restartGame: '重新挑战',
         failTitle: '时间到！',
         failMsg: '别灰心，下次一定可以！',
-        completedLabel: 'Color Match'
+        completedLabel: 'Color Match',
+        levelComplete: '关卡 {level} 完成！',
+        levelMsg: '干得漂亮！继续挑战吗？',
+        mismatchLabel: '看走眼次数: {count}',
+        mismatchLabelShort: '看走眼次数'
     },
     en: {
         subtitle: 'match the ketchup',
@@ -74,7 +78,11 @@ const i18n = {
         restartGame: 'Play Again',
         failTitle: 'TIME UP!',
         failMsg: "Don't give up, try again!",
-        completedLabel: 'Color Match'
+        completedLabel: 'Color Match',
+        levelComplete: 'Level {level} Complete!',
+        levelMsg: 'Great job! Ready for more?',
+        mismatchLabel: 'Mismatches: {count}',
+        mismatchLabelShort: 'Mismatches'
     }
 };
 
@@ -368,7 +376,7 @@ function showLevelComplete() {
         modalTitle.innerHTML = t.winTitle;
         modalMsg.innerHTML = `${t.winMsg8}<br><br>` +
                            `<div style="display:flex; justify-content:center; gap:1.5rem; margin-top:0.5rem; font-size:0.9rem; font-weight:600;">` +
-                           `<span>${t.mismatchLabel.replace(': {count}', '').replace('{count}', totalMismatches)}: ${totalMismatches}</span>` +
+                           `<span>${t.mismatchLabelShort}: ${totalMismatches}</span>` +
                            `</div>`;
         nextLevelBtn.textContent = t.restartGame;
     } else {
