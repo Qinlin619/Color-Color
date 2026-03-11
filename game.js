@@ -8,6 +8,7 @@ export class Game {
         this.grid = [];
         this.selected = null;
         this.score = config.score || 0;
+        this.mismatches = 0;
         this.init();
     }
 
@@ -73,10 +74,11 @@ export class Game {
                 this.score += 10;
                 
                 const isComplete = this.checkComplete();
-                return { action: 'match', score: this.score, isComplete, blocks: [prevSelected, block] };
+                return { action: 'match', score: this.score, isComplete, blocks: [prevSelected, block], mismatches: this.mismatches };
             } else {
+                this.mismatches++;
                 this.selected = block;
-                return { action: 'select', block };
+                return { action: 'select', block, mismatches: this.mismatches };
             }
         }
     }

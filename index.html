@@ -11,17 +11,47 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="theme-toggle" class="theme-toggle-btn" title="Toggle Theme">
+        <span class="icon-moon">🌙</span>
+        <span class="icon-sun">☀️</span>
+    </div>
     <div id="app">
         <!-- Start Screen -->
         <div id="start-screen" class="overlay">
             <div class="modal main-start">
                 <h1 class="title large">Color & Color</h1>
-                <p class="subtitle" data-i18n="subtitle">考验你的色彩灵敏度</p>
+                <p class="subtitle" data-i18n="subtitle">match the ketchup</p>
                 <div class="lang-toggle">
                     <button class="lang-btn active" data-lang="zh">中文</button>
                     <button class="lang-btn" data-lang="en">EN</button>
                 </div>
-                <button id="start-game-btn" class="primary-btn pulse" data-i18n="startBtn">开始游戏</button>
+                <button id="start-game-btn" class="primary-btn pulse" data-i18n="startBtn">进入</button>
+            </div>
+        </div>
+
+        <!-- Palette Selection Screen -->
+        <div id="palette-screen" class="overlay hidden">
+            <div class="modal">
+                <h2 id="palette-title" class="title" data-i18n="paletteTitle">选择你的色板</h2>
+                <div class="palette-grid">
+                    <div id="rainbow-mode-btn" class="palette-card">
+                        <div class="palette-preview rainbow"></div>
+                        <span class="best-time">--:--</span>
+                    </div>
+                    <div id="morandi-mode-btn" class="palette-card">
+                        <div class="palette-preview morandi"></div>
+                        <span class="best-time">--:--</span>
+                    </div>
+                    <div id="macaron-mode-btn" class="palette-card">
+                        <div class="palette-preview macaron"></div>
+                        <span class="best-time">--:--</span>
+                    </div>
+                    <div id="matisse-mode-btn" class="palette-card">
+                        <div class="palette-preview matisse"></div>
+                        <span class="best-time">--:--</span>
+                    </div>
+                </div>
+                <button id="palette-back-btn" class="secondary-btn" data-i18n="backBtn">BACK</button>
             </div>
         </div>
 
@@ -33,15 +63,21 @@
                     <span id="level-value" class="value">1</span>
                 </div>
                 <div class="stat-item">
-                    <span class="label" data-i18n="scoreLabel">SCORE</span>
-                    <span id="score-value" class="value">0</span>
-                </div>
-                <div class="stat-item">
                     <span class="label" data-i18n="timeLabel">TIME</span>
                     <span id="timer-value" class="value">00:00</span>
                 </div>
             </div>
         </header>
+        <div class="level-dots" id="level-dots">
+            <div class="dot active"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
 
         <main id="game-container">
             <div id="game-board"></div>
@@ -49,6 +85,7 @@
 
         <div id="ui-overlay" class="overlay hidden">
             <div class="modal">
+                <div id="modal-icon" class="modal-icon"></div>
                 <h2 id="modal-title">Level Complete!</h2>
                 <p id="modal-msg">Congratulations!</p>
                 <button id="next-level-btn" class="primary-btn">Next Level</button>
@@ -56,6 +93,7 @@
         </div>
 
         <footer>
+            <button id="menu-btn" class="util-btn" data-i18n="menuBtn">Menu</button>
             <button id="shuffle-btn" class="util-btn" data-i18n="shuffleBtn">Shuffle</button>
             <button id="restart-btn" class="util-btn" data-i18n="restartBtn">Restart</button>
         </footer>
