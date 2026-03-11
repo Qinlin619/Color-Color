@@ -1,4 +1,5 @@
 import { Game } from './game.js';
+import { audio } from './audio.js';
 
 let currentGame = null;
 let currentLevel = 1;
@@ -31,6 +32,7 @@ const modalIcon = document.getElementById('modal-icon');
 const i18n = {
     zh: {
         subtitle: 'match the ketchup',
+        producer: '制作人：伞伞',
         startBtn: '开始调色',
         paletteTitle: '调色盘',
         rainbowMode: '彩虹色板',
@@ -53,6 +55,7 @@ const i18n = {
     },
     en: {
         subtitle: 'match the ketchup',
+        producer: 'Produced by: Umbrella',
         startBtn: 'START PAINTING',
         paletteTitle: 'PALETTE',
         rainbowMode: 'Rainbow Palette',
@@ -256,9 +259,15 @@ function handleBlockClick(r, c) {
     document.querySelectorAll('.block').forEach(b => b.classList.remove('selected'));
 
     if (result.action === 'select') {
+        if (result.mismatch) {
+            audio.playMismatch();
+        } else {
+            audio.playSelect();
+        }
         const el = document.getElementById(result.block.id);
         el.classList.add('selected');
     } else if (result.action === 'match') {
+        audio.playMatch();
         boardElement.style.pointerEvents = 'none';
         result.blocks.forEach(b => {
             const el = document.getElementById(b.id);
@@ -313,6 +322,7 @@ function showLevelComplete() {
 
     const t = i18n[currentLang];
     if (currentLevel === 8) {
+        audio.playWin();
         // Handle Best Time
         if (!bestTimes[currentMode] || sessionTime < bestTimes[currentMode]) {
             bestTimes[currentMode] = sessionTime;
@@ -337,17 +347,21 @@ function showLevelComplete() {
         modalTitle.textContent = t.levelComplete.replace('{level}', currentLevel);
         modalMsg.textContent = t.levelMsg;
         nextLevelBtn.textContent = t.nextLevel;
+        audio.playLevelComplete();
     }
 }
 
 // Event Listeners
 startGameBtn.addEventListener('click', () => {
+    audio.playClick();
+    audio.playBGM();
     startScreen.classList.add('hidden');
     paletteScreen.classList.remove('hidden');
     updateBestTimeUI();
 });
 
 document.getElementById('rainbow-mode-btn').addEventListener('click', () => {
+    audio.playClick();
     currentMode = 'rainbow';
     shuffledThemes = [...themes].sort(() => Math.random() - 0.5);
     paletteScreen.classList.add('hidden');
@@ -355,6 +369,7 @@ document.getElementById('rainbow-mode-btn').addEventListener('click', () => {
 });
 
 document.getElementById('morandi-mode-btn').addEventListener('click', () => {
+    audio.playClick();
     currentMode = 'morandi';
     shuffledThemes = [...morandiThemes].sort(() => Math.random() - 0.5);
     paletteScreen.classList.add('hidden');
@@ -362,6 +377,7 @@ document.getElementById('morandi-mode-btn').addEventListener('click', () => {
 });
 
 document.getElementById('macaron-mode-btn').addEventListener('click', () => {
+    audio.playClick();
     currentMode = 'macaron';
     shuffledThemes = [...macaronThemes].sort(() => Math.random() - 0.5);
     paletteScreen.classList.add('hidden');
@@ -369,6 +385,7 @@ document.getElementById('macaron-mode-btn').addEventListener('click', () => {
 });
 
 document.getElementById('matisse-mode-btn').addEventListener('click', () => {
+    audio.playClick();
     currentMode = 'matisse';
     shuffledThemes = [...matisseThemes].sort(() => Math.random() - 0.5);
     paletteScreen.classList.add('hidden');
@@ -376,11 +393,13 @@ document.getElementById('matisse-mode-btn').addEventListener('click', () => {
 });
 
 document.getElementById('palette-back-btn').addEventListener('click', () => {
+    audio.playClick();
     paletteScreen.classList.add('hidden');
     startScreen.classList.remove('hidden');
 });
 
 nextLevelBtn.addEventListener('click', () => {
+    audio.playClick();
     if (currentLevel === 8) {
         currentLevel = 1;
         totalMismatches = 0;
@@ -399,6 +418,7 @@ nextLevelBtn.addEventListener('click', () => {
 
 document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.addEventListener('click', () => {
+        audio.playClick();
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         updateLanguage(btn.getAttribute('data-lang'));
@@ -406,15 +426,18 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
 });
 
 document.getElementById('restart-btn').addEventListener('click', () => {
+    audio.playClick();
     initLevel(currentLevel);
 });
 
 document.getElementById('shuffle-btn').addEventListener('click', () => {
+    audio.playClick();
     currentGame.shuffle();
     renderBoard();
 });
 
 document.getElementById('menu-btn').addEventListener('click', () => {
+    audio.playClick();
     clearInterval(timerInterval);
     paletteScreen.classList.remove('hidden');
     currentLevel = 1;
@@ -437,6 +460,7 @@ if (savedTheme === 'dark') {
 }
 
 themeBtn.addEventListener('click', () => {
+    audio.playClick();
     rootBody.classList.toggle('dark-mode');
     const isDarkMode = rootBody.classList.contains('dark-mode');
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
@@ -445,5 +469,26 @@ themeBtn.addEventListener('click', () => {
     themeBtn.style.transform = 'scale(0.8) rotate(180deg)';
     setTimeout(() => {
         themeBtn.style.transform = '';
+    }, 300);
+});
+
+// Audio Toggle Logic
+const audioBtn = document.getElementById('audio-toggle');
+if (audio.isMuted) {
+    audioBtn.classList.add('muted');
+}
+
+audioBtn.addEventListener('click', () => {
+    const isMuted = audio.toggleMute();
+    audioBtn.classList.toggle('muted', isMuted);
+    
+    if (!isMuted) {
+        audio.playClick();
+    }
+
+    // Animation
+    audioBtn.style.transform = 'scale(0.8)';
+    setTimeout(() => {
+        audioBtn.style.transform = '';
     }, 300);
 });

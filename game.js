@@ -78,7 +78,7 @@ export class Game {
             } else {
                 this.mismatches++;
                 this.selected = block;
-                return { action: 'select', block, mismatches: this.mismatches };
+                return { action: 'select', block, mismatches: this.mismatches, mismatch: true };
             }
         }
     }
