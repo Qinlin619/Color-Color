@@ -10,11 +10,11 @@ let currentLang = 'zh';
 let totalMismatches = 0;
 let currentMode = 'rainbow'; // 'rainbow' or 'morandi'
 let sessionTime = 0; // Total time for all levels in a session
-let bestTimes = JSON.parse(localStorage.getItem('bestTimes')) || {
-    rainbow: null,
-    morandi: null,
-    macaron: null,
-    matisse: null
+let completedModes = JSON.parse(localStorage.getItem('completedModes')) || {
+    rainbow: false,
+    morandi: false,
+    macaron: false,
+    matisse: false
 };
 
 const boardElement = document.getElementById('game-board');
@@ -48,10 +48,10 @@ const i18n = {
         nextLevel: '进入下一关',
         winTitle: '<span class="trophy">🏆</span>恭喜通关！',
         winMsg8: '恭喜成为顶级设计师！你的色彩敏锐度非常惊人。',
-        levelComplete: '关卡 {level} 完成！',
-        levelMsg: '干得漂亮！继续挑战吗？',
-        mismatchLabel: '看走眼次数: {count}',
-        restartGame: '重新挑战'
+        restartGame: '重新挑战',
+        failTitle: '时间到！',
+        failMsg: '别灰心，下次一定可以！',
+        completedLabel: 'Color Match'
     },
     en: {
         subtitle: 'match the ketchup',
@@ -71,10 +71,10 @@ const i18n = {
         nextLevel: 'Next Level',
         winTitle: '<span class="trophy">🏆</span>Game Complete!',
         winMsg8: 'Congrats, you are a Top Designer! Your color vision is elite.',
-        levelComplete: 'Level {level} Complete!',
-        levelMsg: 'Great job! Ready for more?',
-        mismatchLabel: 'Mismatches: {count}',
-        restartGame: 'Play Again'
+        restartGame: 'Play Again',
+        failTitle: 'TIME UP!',
+        failMsg: "Don't give up, try again!",
+        completedLabel: 'Color Match'
     }
 };
 
@@ -176,15 +176,13 @@ function generateSimilarColors(count, theme) {
 
 function updateBestTimeUI() {
     const modes = ['rainbow', 'morandi', 'macaron', 'matisse'];
+    const t = i18n[currentLang];
     modes.forEach(mode => {
         const btn = document.getElementById(`${mode}-mode-btn`);
         if (btn) {
             const timeSpan = btn.querySelector('.best-time');
-            const best = bestTimes[mode];
-            if (best) {
-                const mins = Math.floor(best / 60).toString().padStart(2, '0');
-                const secs = (best % 60).toString().padStart(2, '0');
-                timeSpan.textContent = `${mins}:${secs}`;
+            if (completedModes[mode]) {
+                timeSpan.textContent = t.completedLabel;
                 timeSpan.style.display = 'block';
             } else {
                 timeSpan.style.display = 'none';
@@ -306,13 +304,40 @@ function updateLevelDots() {
 
 function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
-    timer = 0;
+    timer = 120; // 2 minutes countdown
+    
+    // Initial display
+    const mins = Math.floor(timer / 60).toString().padStart(2, '0');
+    const secs = (timer % 60).toString().padStart(2, '0');
+    timerValue.textContent = `${mins}:${secs}`;
+    timerValue.style.color = 'inherit';
+
     timerInterval = setInterval(() => {
-        timer++;
+        timer--;
         const mins = Math.floor(timer / 60).toString().padStart(2, '0');
         const secs = (timer % 60).toString().padStart(2, '0');
         timerValue.textContent = `${mins}:${secs}`;
+        
+        if (timer <= 10) {
+            timerValue.style.color = '#ff3e8d';
+            if (timer % 2 === 0) audio.playClick(); // Ticking sound for last 10s
+        }
+
+        if (timer <= 0) {
+            clearInterval(timerInterval);
+            handleGameOver();
+        }
     }, 1000);
+}
+
+function handleGameOver() {
+    uiOverlay.classList.remove('hidden');
+    const t = i18n[currentLang];
+    modalIcon.innerHTML = '⏰';
+    modalTitle.textContent = t.failTitle;
+    modalMsg.textContent = t.failMsg;
+    nextLevelBtn.textContent = i18n[currentLang].restartBtn;
+    audio.playMismatch();
 }
 
 function showLevelComplete() {
@@ -323,12 +348,10 @@ function showLevelComplete() {
     const t = i18n[currentLang];
     if (currentLevel === 8) {
         audio.playWin();
-        // Handle Best Time
-        if (!bestTimes[currentMode] || sessionTime < bestTimes[currentMode]) {
-            bestTimes[currentMode] = sessionTime;
-            localStorage.setItem('bestTimes', JSON.stringify(bestTimes));
-            updateBestTimeUI();
-        }
+        // Mark mode as completed
+        completedModes[currentMode] = true;
+        localStorage.setItem('completedModes', JSON.stringify(completedModes));
+        updateBestTimeUI();
 
         const mins = Math.floor(sessionTime / 60).toString().padStart(2, '0');
         const secs = (sessionTime % 60).toString().padStart(2, '0');
@@ -338,7 +361,6 @@ function showLevelComplete() {
         modalTitle.innerHTML = t.winTitle;
         modalMsg.innerHTML = `${t.winMsg8}<br><br>` +
                            `<div style="display:flex; justify-content:center; gap:1.5rem; margin-top:0.5rem; font-size:0.9rem; font-weight:600;">` +
-                           `<span>${t.timeLabel}: ${finalTimeStr}</span>` +
                            `<span>${t.mismatchLabel.replace(': {count}', '').replace('{count}', totalMismatches)}: ${totalMismatches}</span>` +
                            `</div>`;
         nextLevelBtn.textContent = t.restartGame;
@@ -400,18 +422,28 @@ document.getElementById('palette-back-btn').addEventListener('click', () => {
 
 nextLevelBtn.addEventListener('click', () => {
     audio.playClick();
-    if (currentLevel === 8) {
+    
+    // If we failed (timer ran out), reset to level 1
+    if (timer <= 0) {
         currentLevel = 1;
         totalMismatches = 0;
-        let baseThemes;
-        if (currentMode === 'morandi') baseThemes = morandiThemes;
-        else if (currentMode === 'macaron') baseThemes = macaronThemes;
-        else if (currentMode === 'matisse') baseThemes = matisseThemes;
-        else baseThemes = themes;
-        shuffledThemes = [...baseThemes].sort(() => Math.random() - 0.5);
+        sessionTime = 0;
+    } else if (currentLevel === 8) {
+        currentLevel = 1;
+        totalMismatches = 0;
+        sessionTime = 0;
     } else {
         currentLevel++;
     }
+
+    // Refresh themes for the mode
+    let baseThemes;
+    if (currentMode === 'morandi') baseThemes = morandiThemes;
+    else if (currentMode === 'macaron') baseThemes = macaronThemes;
+    else if (currentMode === 'matisse') baseThemes = matisseThemes;
+    else baseThemes = themes;
+    shuffledThemes = [...baseThemes].sort(() => Math.random() - 0.5);
+
     uiOverlay.classList.add('hidden');
     initLevel(currentLevel);
 });

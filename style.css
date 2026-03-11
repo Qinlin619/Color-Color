@@ -494,22 +494,23 @@ body.dark-mode .audio-toggle-btn:hover {
 
 .palette-card .best-time {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.45);
-    color: #fff;
-    font-size: 0.85rem;
-    font-weight: 800;
-    padding: 4px 12px;
-    border-radius: 20px;
-    z-index: 10;
-    pointer-events: none;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 0.7rem;
+    padding: 4px 0;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
     white-space: nowrap;
     opacity: 0.95;
     font-family: 'Outfit', sans-serif;
-    letter-spacing: 0.5px;
-    backdrop-filter: blur(4px);
+    pointer-events: none;
+    z-index: 10;
 }
 
 .palette-preview.rainbow {
